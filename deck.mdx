@@ -1,0 +1,633 @@
+import { themes } from 'mdx-deck';
+import { LiveCode } from 'mdx-deck-live-code';
+
+import myThemes from './theme';
+import myPrismTheme from './prism-theme';
+
+import './styles.css';
+
+export const theme = {
+  ...myThemes,
+  ...myPrismTheme,
+};
+
+<Header>Hover Conf 2021 Recap - 8 hours of CSS talks in 30 minutes</Header>
+<Footer>Chris Colborne - June 2021</Footer>
+
+# Hover Conf 2021
+
+## 8 hours of CSS talks in 30 minutes
+
+### Chris Colborne - July 2021
+
+---
+
+## What's New in CSS 2021
+
+### Adam Argyle, Developer Advocateer, Google
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/adam-argyle.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## 31 features, from risky to stable
+
+<div style={{ display: 'flex', gap: '36px' }}>
+  <div>
+    <h3>High Risk</h3>
+    <ul>
+      <li>Conditionals</li>
+      <li className="highlight">
+        <span>Switch</span>
+      </li>
+      <li>Relative Units</li>
+      <li className="highlight">
+        <span>Houdini Layout</span>
+      </li>
+      <li className="highlight">
+        <span>@scope</span>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <h3>Moderate Risk</h3>
+    <ul>
+      <li className="highlight">
+        <span>@container</span>
+      </li>
+      <li>Leading Trim</li>
+      <li className="highlight">
+        <span>Houdini Paint</span>
+      </li>
+      <li className="highlight">
+        <span>@scroll-timeline</span>
+      </li>
+      <li>Spelling & Grammar</li>
+      <li>:target-within</li>
+      <li className="highlight">
+        <span>@nest</span>
+      </li>
+      <li className="highlight">
+        <span>@layer</span>
+      </li>
+      <li>Foldables</li>
+      <li className="highlight">
+        <span>Color 5</span>
+      </li>
+      <li className="highlight">
+        <span>Grid Masonry</span>
+      </li>
+      <li className="highlight">
+        <span>Custom @media</span>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <h3>Low Risk</h3>
+    <ul>
+      <li>Color 4</li>
+      <li>HD Color</li>
+      <li className="highlight">
+        <span>@property</span>
+      </li>
+      <li>Content Visibility</li>
+      <li className="highlight">
+        <span>aspect-ratio</span>
+      </li>
+      <li>::marker</li>
+      <li className="highlight">
+        <span>Conic Gradients</span>
+      </li>
+      <li>Containment</li>
+      <li>:focus-visible</li>
+      <li>:focus-within</li>
+      <li className="highlight">
+        <span>Logical Properties</span>
+      </li>
+      <li>:is() & :where()</li>
+      <li>Reduced Data</li>
+      <li>::cue()</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+### Resources
+
+[Slides](https://2021-hover-conf-new-in-css.netlify.app)
+
+---
+
+## Container Queries & The Future of CSS
+
+### Miriam Suzanne, Co-founder, Oddbird
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/miriam-suzanne.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## @layer
+
+@layer is a way to override the cascade, like groupings
+
+Order of priority is based on when it was first used
+
+```css
+@layer default {
+  /* lowest */
+}
+@layer theme {
+  /* higher */
+}
+@layer components {
+  /* highest */
+}
+```
+
+---
+
+## @layer
+
+Layers are separate from normal css specificity
+
+But unlayered rules have higher precedence - implied highest layer
+
+---
+
+## @layer
+
+Styles can be added later, but will still have priority of first use
+
+```css
+@layer bootstrap {
+  .box {
+    color: red;
+  }
+}
+
+@layer components {
+  .box {
+    color: blue;
+  }
+}
+
+/* styles in components layer will still take precedence */
+@import url(bootstrap-purple-box.css) layer(bootstrap);
+```
+
+---
+
+## @scope
+
+Flexible Scoped CSS
+
+Proposed @scope rule - still being discussed
+
+From root element to lower bound are affected
+
+```css
+@scope (.media) to (.content) {
+  a {
+    color: #f00;
+  }
+}
+```
+
+---
+
+## Container Queries
+
+Like media queries, but based on container width, not screen
+
+Needs a `contain` property on the parent
+
+```css
+contain: layout inline-size;
+```
+
+Then can use the @container rule
+
+```css
+@container (min-width: 30em) {
+```
+
+---
+
+## Container Queries - Full example
+
+```css
+.card {
+  /* a container for every card */
+  container-type: inline-size;
+  flex: 1 1 min(100%, 20em);
+}
+
+/* the card can't query itself so we add an element directly inside */
+article {
+  flex: 1;
+  display: grid;
+  grid-template: 'img' 8em 'content' auto / 100%;
+  gap: 1em;
+  padding: 1em;
+}
+
+/* change the grid template when the card is larger! */
+@container (min-width: 30em) {
+  article {
+    grid-template: 'img content' auto / minmax(5em, 10em) 1fr;
+  }
+}
+```
+
+---
+
+## Resources
+
+[Slides](https://slides.oddbird.net/css-next/hover/)
+
+[Container Query CodePen](https://codepen.io/mirisuzanne/pen/mdRVMbp)
+
+[Container Query CodePen Collection](https://codepen.io/collection/XQrgJo)
+
+---
+
+## The State of CSS-in-JS
+
+### Mark Dalgleish, Front End Lead, SEEK
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/mark-dalgleish.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## Styled Components and Emotion are the big two
+
+---
+
+## Goober
+
+Similar api to SC / Emotion
+
+< 1kb
+
+Benchmark
+
+SC - 15000
+Emotion - 104000
+Goober - 200000
+
+https://goober.js.org/
+
+---
+
+## Goober - Code Example
+
+```jsx
+import React from 'react';
+import { styled, setup } from 'goober';
+
+// Should be called here, and just once
+setup(React.createElement);
+
+const Button = styled('button')`
+  background: dodgerblue;
+  border: ${Math.random()}px solid white;
+
+  &:hover {
+    padding: 1em;
+  }
+
+  .otherClass {
+    margin: 0;
+  }
+
+  ${Icon} {
+    color: black;
+  }
+`;
+```
+
+---
+
+### Stitches
+
+From Modulz
+
+Declare variants
+
+Not as flexible as styled components, but more declarative
+
+Good Typescript support
+
+Good for static extraction too
+
+https://stitches.dev/
+
+---
+
+### vanilla-extract
+
+By seek guys incl Mark Dalgleish
+
+Goal to have zero dep library
+
+Button.css.ts - file won't be in final bundle
+
+Like CSS Modules but written in Typescript not CSS
+
+CSS variables will have type checking
+
+Minimal abstraction over CSS
+
+---
+
+### Compiled
+
+From Atlassian
+
+Extracts them to atomic styles, then extracted to static CSS file
+
+Needs to be statically analysable, but if it can't extract it, it falls back to a runtime
+
+---
+
+## CSS Aspect Ratio
+
+### Anton Ball, Front End Developer, Doist
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/anton-ball.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+### How we do it now
+
+Padding top hack
+
+`padding-top: 56.25%;` for 16:9
+
+For videos
+
+fitvids.js - Dave Rupert
+
+---
+
+### The New Way
+
+Aspect Ratio part of CSS Box Sizing Module Level 4
+
+https://caniuse.com/mdn-css_properties_aspect-ratio
+
+Chromium: 88+
+
+`aspect-ratio: auto | <ratio>`
+
+ratio - eg 16 / 9
+
+available for anything that isn't inline, tables
+
+Intrinsic aspect ratio - set width and height on replaceable elements - eg iframe, video, embed, ... something else
+
+aspect-ratio is weakest way to set - if width and height set it's ignored
+
+Use it now with @supports
+
+---
+
+<LiveCode
+  size="medium"
+  title="Aspect ratio - Demo"
+  editorProps={{
+    onKeyDown: (e) => e.nativeEvent.stopImmediatePropagation(),
+  }}
+  code={`
+  <div style={{
+    maxHeight: '600px',
+    aspectRatio: '16 / 9',
+    background: '#5a4cdb',
+    color: '#fff',
+  }}>
+    Hi
+  </div>
+`}
+/>
+
+---
+
+### Part of Web Compat 2021
+
+Google is working with other browser vendors and industry partners to eliminate the top five browser compatibility pain points for web developers.
+
+The areas of focus are CSS flexbox, CSS Grid, position: sticky, aspect-ratio, and CSS transforms
+
+https://web.dev/compat2021
+
+---
+
+## CSS Variables for Real Life
+
+### Matt Colman, Senior Software Engineer, Atlassian
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/matt-colman.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+Keep colours in sync when hovering
+
+Reduce nested media queries for typography - fix it once, use it everywhere
+
+Figma workflow - CSS variables show in dev tools, which makes it easier to eyeball design tokens
+
+---
+
+## Typography superpower with variable fonts and CSS
+
+### Ananya Neogi, Front End Developer, Shopify
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/ananya-neogi.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+### What are variable fonts?
+
+Something that's like a single font file that behaves like multiple fonts.
+
+---
+
+### How do they look?
+
+```css
+h1 {
+  /* weight */
+  font-variation-settings: 'wght' 705; // usual font weights
+
+  /* width */
+  font-variation-settings: 'wdth' 75; // numeric varies by font
+
+  /* italics */
+  font-variation-settings: 'ital' 0.25; // 0 - 1
+
+  /* slant - more control - angle of italicsness */
+  font-variation-settings: 'slnt' 6; // numeric varies by font
+
+  /* optical size */
+  font-variation-settings: 'opsz' 14; // numeric varies by font
+}
+```
+
+---
+
+### Variable Fonts - Demo
+
+https://v-fonts.com/
+
+---
+
+## Understanding display
+
+### Rachel Andrew, Speaker, MDN Author, CSSWG Member
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/rachel-andrew.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## Neurodiversity (and why you hate CSS)
+
+### Facundo Corradini, Independent Front End Developer
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/facundo-corradini.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## The New CSS Logical Properties
+
+### Elad Shechter, Independent CSS/HTML Architect
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/elad-shechter.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## Beyond responsive design: new and future media queries
+
+### Kilian Valkhof, Browser Developer, Polypane
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/kilian-valkhof.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## CSS Comparison Functions
+
+### Ahmad Shadeed, UX Designer, Front End Developer, Uxable
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/ahmad-shadeed.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## Move over TypeScript, here comes TypedCSS!
+
+### Rhiana Heath, Software Engineer, Blake eLearning
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/rhiana-heath.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## How To Draw, With CSS
+
+### Michal Porag, Front End Developer, Outbrain
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/michal-porag.jpg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## A special Webbed Briefs
+
+### Heydon Pickering, Designer, Developer, HeydonWorks
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/fetch/c_fill,g_face,h_300,w_300/f_auto/q_auto/https://webdirections.org/event-common-images/speakers/heydon-pickering.svg"
+  style={{
+    width: '300px',
+    height: '300px',
+  }}
+></Image>
+
+---
+
+## The End

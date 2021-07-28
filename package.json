@@ -1,0 +1,20 @@
+{
+  "name": "hover-preso",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "css": "^2.2.1",
+    "emotion-theming": "^11.0.0",
+    "fs": "^0.0.1-security",
+    "mdx-deck": "^4.1.1",
+    "mdx-deck-live-code": "^1.0.1",
+    "styled-components": "^5.3.0"
+  },
+  "resolutions": {
+    "mdx-deck/**/react-syntax-highlighter": "^13.2.0"
+  },
+  "scripts": {
+    "start": "mdx-deck deck.mdx"
+  }
+}

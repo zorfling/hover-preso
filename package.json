@@ -15,6 +15,7 @@
     "mdx-deck/**/react-syntax-highlighter": "^13.2.0"
   },
   "scripts": {
-    "start": "mdx-deck deck.mdx"
+    "start": "mdx-deck deck.mdx",
+    "build": "mdx-deck build deck.mdx"
   }
 }

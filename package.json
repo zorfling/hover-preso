@@ -9,7 +9,8 @@
     "fs": "^0.0.1-security",
     "mdx-deck": "^4.1.1",
     "mdx-deck-live-code": "^1.0.1",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "react-caniuse-embed": "^0.1.2"
   },
   "resolutions": {
     "mdx-deck/**/react-syntax-highlighter": "^13.2.0"

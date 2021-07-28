@@ -21,6 +21,13 @@ export default {
     h1: {
       fontSize: 96,
     },
+    table: {
+      borderSpacing: '32px 0px',
+    },
+    th: {
+      fontWeight: 'bold',
+      background: '#cecee3',
+    },
     Header: {
       fontFamily: '"DM Sans", sans-serif',
     },

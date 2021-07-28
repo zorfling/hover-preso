@@ -11,12 +11,12 @@ export const theme = {
   ...myPrismTheme,
 };
 
-<Header>Hover Conf 2021 Recap - 8 hours of CSS talks in 30 minutes</Header>
-<Footer>Chris Colborne - June 2021</Footer>
+<Header>Hover Conf 2021 Recap - 8 hours of CSS talks in 45 minutes</Header>
+<Footer>Chris Colborne - July 2021</Footer>
 
 # Hover Conf 2021
 
-## 8 hours of CSS talks in 30 minutes
+## 8 hours of CSS talks in 45 minutes
 
 ### Chris Colborne - July 2021
 
@@ -327,7 +327,7 @@ const Button = styled('button')`
 
 ---
 
-### Stitches
+## Stitches
 
 From Modulz
 
@@ -343,13 +343,56 @@ https://stitches.dev/
 
 ---
 
-### vanilla-extract
+## Stitches - Code Example
 
-By seek guys incl Mark Dalgleish
+```jsx
+const Button = styled('button', {
+  backgroundColor: 'gainsboro',
+  borderRadius: '9999px',
+  fontSize: '13px',
+  border: '0',
+});
+
+() => <Button>Button</Button>;
+```
+
+---
+
+## Stitches - Variant Code Example
+
+```jsx
+const Button = styled('button', {
+  // base styles
+
+  variants: {
+    color: {
+      violet: {
+        backgroundColor: 'blueviolet',
+        color: 'white',
+        '&:hover': {
+          backgroundColor: 'darkviolet',
+        },
+      },
+      gray: {
+        backgroundColor: 'gainsboro',
+        '&:hover': {
+          backgroundColor: 'lightgray',
+        },
+      },
+    },
+  },
+});
+
+() => <Button color="violet">Button</Button>;
+```
+
+---
+
+## vanilla-extract
+
+By Seek Open Source guys incl Mark Dalgleish
 
 Goal to have zero dep library
-
-Button.css.ts - file won't be in final bundle
 
 Like CSS Modules but written in Typescript not CSS
 
@@ -357,15 +400,128 @@ CSS variables will have type checking
 
 Minimal abstraction over CSS
 
+https://vanilla-extract.style/
+
 ---
 
-### Compiled
+## vanilla-extract - Code Example
+
+styles.css.ts - file won't be in final bundle - compiles to static CSS
+.element {
+width: clamp(200px, 50%, 1000px);
+}
+
+```tsx
+import { createTheme, style } from '@vanilla-extract/css';
+
+export const [themeClass, vars] = createTheme({
+  color: {
+    brand: 'blue',
+    white: '#fff',
+  },
+  space: {
+    small: '4px',
+    medium: '8px',
+  },
+});
+
+export const hero = style({
+  backgroundColor: vars.color.brandd, // type error
+  color: vars.color.white,
+  padding: vars.space.large, // type error
+});
+```
+
+---
+
+## Compiled
 
 From Atlassian
 
 Extracts them to atomic styles, then extracted to static CSS file
 
+Uses CSS variables for props
+
 Needs to be statically analysable, but if it can't extract it, it falls back to a runtime
+
+https://compiledcssinjs.com/
+
+---
+
+## Compiled - Code Example - styled
+
+```jsx
+import { styled } from '@compiled/react';
+
+export const Button = styled.button`
+  border: none;
+  border-radius: 3px;
+  padding: 8px 10px;
+  background-color: #6554c0;
+  color: #fff;
+  font-weight: 400;
+  font-family: arial;
+  font-size: 14px;
+
+  :hover {
+    background-color: #8777d9;
+  }
+
+  :active {
+    background-color: #5243aa;
+  }
+`;
+```
+
+---
+
+## Compiled - Code Example - css prop and extraction
+
+<div style={{display: 'flex', gap: '32px'}}>
+
+```jsx
+import '@compiled/react';
+
+export const LargeText = (props) => (
+  <span
+    css={{
+      color: props.color,
+      fontSize: 48,
+    }}
+    data-testid="large-hot-pink"
+  >
+    {props.children}
+  </span>
+);
+
+<LargeText color="pink">Hello world</LargeText>;
+```
+
+<div>
+
+```jsx
+export const LargeHotPinkText = (props) => (
+  <span
+    style={{ '--_kmurgp': props.color }}
+    className="_syaz4rde _1wybfyhu"
+    data-testid="large-hot-pink"
+  >
+    {props.children}
+  </span>
+);
+```
+
+```css
+._1wybfyhu {
+  font-size: 48px;
+}
+._syaz4rde {
+  color: var(--_kmurgp);
+}
+```
+
+</div>
+</div>
 
 ---
 
@@ -383,19 +539,19 @@ Needs to be statically analysable, but if it can't extract it, it falls back to 
 
 ---
 
-### How we do it now
+## How we do it now
 
-Padding top hack
+Padding top hack <br />
+Padding in percentages is based on width
 
-`padding-top: 56.25%;` for 16:9
-
-For videos
-
-fitvids.js - Dave Rupert
+```css
+/* 16:9 because 9 / 16 = .5625 */
+padding-top: 56.25%;
+```
 
 ---
 
-### The New Way
+## The New Way
 
 Aspect Ratio part of CSS Box Sizing Module Level 4
 
@@ -403,17 +559,9 @@ https://caniuse.com/mdn-css_properties_aspect-ratio
 
 Chromium: 88+
 
-`aspect-ratio: auto | <ratio>`
-
-ratio - eg 16 / 9
-
-available for anything that isn't inline, tables
-
-Intrinsic aspect ratio - set width and height on replaceable elements - eg iframe, video, embed, ... something else
-
-aspect-ratio is weakest way to set - if width and height set it's ignored
-
-Use it now with @supports
+```css
+aspect-ratio: auto | <ratio>`;
+```
 
 ---
 
@@ -424,22 +572,30 @@ Use it now with @supports
     onKeyDown: (e) => e.nativeEvent.stopImmediatePropagation(),
   }}
   code={`
-  <div style={{
-    maxHeight: '600px',
-    aspectRatio: '16 / 9',
-    background: '#5a4cdb',
-    color: '#fff',
-  }}>
-    Hi
+  <div style={{ padding: '1rem' }}>
+    <div style={{
+      maxHeight: '600px',
+      background: '#5a4cdb',
+      color: '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      aspectRatio: '16 / 9'
+    }}>
+      Hi
+    </div>
+
   </div>
 `}
 />
 
 ---
 
-### Part of Web Compat 2021
+## Part of Web Compat 2021
 
-Google is working with other browser vendors and industry partners to eliminate the top five browser compatibility pain points for web developers.
+Google is working with other browser vendors and industry partners
+
+Goal is to eliminate the top five browser compatibility pain points for web developers.
 
 The areas of focus are CSS flexbox, CSS Grid, position: sticky, aspect-ratio, and CSS transforms
 
@@ -461,11 +617,73 @@ https://web.dev/compat2021
 
 ---
 
-Keep colours in sync when hovering
+## Real Life Situation #1 - JIRA Deployments View
+
+Keep border and background colours in sync as they vary, also when hovering
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/upload/v1627473071/jira_fkn0rh.png"
+  style={{ width: '600px', height: '300px' }}
+/>
+
+---
+
+## Real Life Situation #2 - Domain Design System Typography
+
+Domain basically had media queries wherever there was text.
 
 Reduce nested media queries for typography - fix it once, use it everywhere
 
+<div style={{display: 'flex', gap: '32px'}}>
+
+```jsx
+const globalStyles = css`
+  body {
+    --h700-font-size: 14px;
+    --h700-font-weight: 700;
+
+    @media (min-width: 550px) {
+      --h700-font-size: 30px;
+      --h700-font-weight: 600;
+    }
+    @media (min-width: 800px) {
+      --h700-font-size: 50px;
+      --h700-font-weight: 400;
+    }
+  }
+`;
+```
+
+```jsx
+const typography = {
+  h700: css`
+    font-size: var(--h700-font-size);
+    font-weight: var(--h700-font-weight);
+  `,
+};
+
+const h1Style = css`
+  ${typography.h700};
+  width: 200px;
+  height: 200px;
+  background-color: pink;
+`;
+```
+
+</div>
+
+https://codesandbox.io/s/variable-font-size-css-variables-174rf?file=/src/App.js
+
+---
+
+## Real Life Situation #3 - Design System Tokens
+
 Figma workflow - CSS variables show in dev tools, which makes it easier to eyeball design tokens
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/upload/v1627474154/jira-vars_ev8u5j.png"
+  style={{ height: '400px', width: '1000px' }}
+/>
 
 ---
 
@@ -483,13 +701,13 @@ Figma workflow - CSS variables show in dev tools, which makes it easier to eyeba
 
 ---
 
-### What are variable fonts?
+## What are variable fonts?
 
 Something that's like a single font file that behaves like multiple fonts.
 
 ---
 
-### How do they look?
+## How do they look?
 
 ```css
 h1 {
@@ -512,7 +730,7 @@ h1 {
 
 ---
 
-### Variable Fonts - Demo
+## Variable Fonts - Demo
 
 https://v-fonts.com/
 
@@ -532,6 +750,39 @@ https://v-fonts.com/
 
 ---
 
+## Everything is boxes
+
+Boxes can be block, or inline
+
+Flex boxes are block, with flex children
+
+Grid boxes are block with children in a grid formatting context
+
+---
+
+## Two value display syntax
+
+There is a two value syntax for display that can make clearer what's going on
+
+| Old          | New              |
+| ------------ | ---------------- |
+| block        | block flow       |
+| flow-root    | block flow-root  |
+| inline       | inline flow      |
+| inline-block | inline flow-root |
+| flex         | block flex       |
+| inline-flex  | inline flex      |
+| grid         | block grid       |
+| inline-grid  | inline grid      |
+
+---
+
+## Resources
+
+[Slides](https://noti.st/rachelandrew/VeraEX/understanding-display)
+
+---
+
 ## Neurodiversity (and why you hate CSS)
 
 ### Facundo Corradini, Independent Front End Developer
@@ -543,6 +794,16 @@ https://v-fonts.com/
     height: '300px',
   }}
 ></Image>
+
+---
+
+## CSS is part-way between designer and developer brain
+
+Designers are commonly Visual-Spatial.
+
+Programmers are commonly Logical-Mathematical… but CSS sits in between.
+
+Is it a design task? Is it a coding task? It’s both!
 
 ---
 
@@ -560,6 +821,71 @@ https://v-fonts.com/
 
 ---
 
+## Logical properties get away from directional naming
+
+Top and bottom are the Block Axis
+
+`top` = `block-start`<br />
+`bottom` = `block-end`
+
+Left and right are the Inline Axis
+
+`left` = `inline-start`<br />
+`right` = `inline-end`
+
+---
+
+## Margins
+
+`margin-top` = `margin-block-start`
+
+`margin-bottom` = `margin-block-end`
+
+`margin-left` = `margin-inline-start`
+
+`margin-right` = `margin-inline-end`
+
+---
+
+## Width and Height
+
+`width` = `inline-size`<br />
+`max-width` = `max-inline-size`
+
+`height` = `block-size`<br />
+`max-height` = `max-block-size`
+
+---
+
+## Positions
+
+`top` = `inset-block-start`<br />
+`bottom` = `inset-block-end`
+
+`left` = `inset-inline-start`<br />
+`right` = `inset-inline-end`
+
+But this means we get a new shorthand:
+
+```css
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+
+/* OR */
+
+inset: 0;
+```
+
+---
+
+## Resources
+
+[Slides](https://docs.google.com/presentation/d/1p4iUSyWolqlG_g39sXWKQ1PTVW2jzdMtnPb_F8tQe8k/)
+
+---
+
 ## Beyond responsive design: new and future media queries
 
 ### Kilian Valkhof, Browser Developer, Polypane
@@ -571,6 +897,118 @@ https://v-fonts.com/
     height: '300px',
   }}
 ></Image>
+
+---
+
+## prefers-color-scheme
+
+```css
+@media (prefers-color-scheme: dark) {
+  /* wants dark mode */
+}
+
+@media (prefers-color-scheme: light) {
+  /* wants light mode */
+}
+```
+
+---
+
+## prefers-color-scheme - cheat's dark mode
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root {
+    background: #111;
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+  img,
+  video {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+```
+
+---
+
+## prefers-reduced-motion
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  /* wants reduced motion */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* doesn't want reduced motion */
+}
+```
+
+---
+
+## prefers-reduced-motion - cheat's reduced motion
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  body *,
+  body *::before,
+  body *::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: -1ms !important;
+    scroll-behavior: auto !important;
+    background-attachment: initial !important;
+  }
+}
+```
+
+---
+
+## prefers-contrast (partial support in Safari)
+
+```css
+@media (prefers-contrast: high) {
+  /* wants high contrast*/
+}
+
+@media (prefers-contrast: no-preference) {
+  /* doesn't mind  */
+}
+
+@media (prefers-contrast: low) {
+  /* wants low contrast*/
+}
+```
+
+---
+
+## prefers-reduced-transparency (no support)
+
+```css
+@media (prefers-reduced-transparency: reduce) {
+  /* wants reduced transparency */
+}
+
+@media (prefers-reduced-transparency: no-preference) {
+  /* doesn't want reduced transparency */
+}
+```
+
+---
+
+## prefers-reduced-data (no support)
+
+```css
+@media (prefers-reduced-data: reduce) {
+  /* wants reduced data usage */
+}
+
+@media (prefers-reduced-data: no-preference) {
+  /* doesn't want reduced data usage */
+}
+```
 
 ---
 
@@ -588,6 +1026,53 @@ https://v-fonts.com/
 
 ---
 
+## min()
+
+```css
+.element {
+  /* minimum of 50% or 500px */
+  width: min(50%, 500px);
+}
+```
+
+---
+
+## max()
+
+```css
+.element {
+  /* maximum of 50% or 500px */
+  width: max(50%, 500px);
+}
+```
+
+---
+
+## clamp()
+
+```css
+.element {
+  /* at least 200px, preferred 50%, and at most 1000px */
+  width: clamp(200px, 50%, 1000px);
+}
+```
+
+clamp can also use math expressions without calc()
+
+```css
+.title {
+  font-size: clamp(12px, 10 * (1vw + 1vh) / 2, 100px);
+}
+```
+
+---
+
+## Resources
+
+[Article](https://ishadeed.com/article/css-min-max-clamp/)
+
+---
+
 ## Move over TypeScript, here comes TypedCSS!
 
 ### Rhiana Heath, Software Engineer, Blake eLearning
@@ -599,6 +1084,101 @@ https://v-fonts.com/
     height: '300px',
   }}
 ></Image>
+
+---
+
+## Houdini
+
+TypedCSS under Houdini - Typed Object Model (Typed OM)
+
+---
+
+## attributeStyleMap.get()
+
+```css
+.foo {
+  width: 500px;
+}
+```
+
+```js
+const foo = document.querySelector('.foo');
+
+foo.css('width');
+// "500px"
+
+foo.attributeStyleMap.get('width');
+// CSSUnitValue {
+//   value: 500,
+//   unit: 'px'
+// }
+```
+
+---
+
+## attributeStyleMap.set()
+
+```js
+foo.attributeStyleMap.set('width', CSS.percent(50));
+```
+
+---
+
+## CSSMathSum
+
+```js
+const sum = new CSSMathSum(CSS.percent(100), CSS.px(20));
+
+CSS.vw(100).add(sum).toString();
+// "calc(100vw + (100% + 20px))"
+
+foo.attributeStyleMap.set('width', sum);
+```
+
+---
+
+## computedStyleMap()
+
+```css
+.foo {
+  width: calc(100vw + (!00% + 20px));
+}
+```
+
+```js
+const cs = foo.computedStyleMap();
+
+cs.get('width');
+// CSSMathSum {
+//   operator: 'sum',
+//   length: 3,
+//   values: CSSNumericArray {
+//     0: CSSUnitValue { value: 100, unit: 'vw' },
+//     1: CSSUnitValue { value: 100, unit: 'percent' },
+//     2: CSSUnitValue { value: 20, unit: 'px' },
+//   },
+// }
+```
+
+---
+
+## CSSStyleValue.parse()
+
+```js
+try {
+  const css = CSSStyleValue.parse('width', 'CSS.px(not a value)');
+  // use css
+} catch (error) {
+  console.error(`${error}: please supply a valid width value`);
+}
+```
+
+---
+
+## Resources
+
+[Slides](https://slides.com/rhianaheppenstall/move-over-typescript-here-comes-typedcss)
+[CodePens](https://codepen.io/Rumyra/pen/99bc930f82fe908346254df5354066b4?editors=0110)
 
 ---
 
@@ -616,6 +1196,34 @@ https://v-fonts.com/
 
 ---
 
+## Drawing Pikachu
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/upload/v1627479168/Screen_Shot_2021-07-28_at_11.32.24_pm_ekwkuu.png"
+  style={{ width: '400px', height: '400px' }}
+/>
+
+https://codepen.io/michalporag/pen/LYRwgwZ
+
+---
+
+## Drawing a Single Div Kite
+
+<Image
+  src="https://res.cloudinary.com/zorfling/image/upload/v1627479399/Screen_Shot_2021-07-28_at_11.36.24_pm_vpwcs3.png"
+  style={{ width: '400px', height: '400px' }}
+/>
+
+https://codepen.io/michalporag/pen/oNBzZqL
+
+---
+
+## Resources
+
+[CodePens](https://codepen.io/michalporag/pens/public)
+
+---
+
 ## A special Webbed Briefs
 
 ### Heydon Pickering, Designer, Developer, HeydonWorks
@@ -627,6 +1235,26 @@ https://v-fonts.com/
     height: '300px',
   }}
 ></Image>
+
+---
+
+## Six ways to draw a line on the web
+
+1. The Horizontal Rule
+2. Scalable Vector Graphics
+3. UTF-8 encoded SVG background images
+4. Repeating linear-gradients
+5. Houdini paint worklets
+6. WebGL
+
+https://briefs.video/videos/how-do-i-draw-a-line/
+
+---
+
+## Final Resources
+
+- [Ben Buchanan's Big Stonking Post™](https://weblog.200ok.com.au/2021/05/hover-21-big-stonking-post.html)
+- [Hover Site](https://webdirections.org/hover/)
 
 ---
 

@@ -1276,7 +1276,6 @@ const sum = new CSSMathSum(CSS.percent(100), CSS.px(20));
 
 CSS.vw(100).add(sum).toString();
 // "calc(100vw + (100% + 20px))"
-
 foo.attributeStyleMap.set('width', sum);
 ```
 
@@ -1286,7 +1285,7 @@ foo.attributeStyleMap.set('width', sum);
 
 ```css
 .foo {
-  width: calc(100vw + (!00% + 20px));
+  width: calc(100vw + (100% + 20px));
 }
 ```
 
@@ -1410,4 +1409,4 @@ https://codepen.io/michalporag/pen/oNBzZqL
 
 ## The End
 
-[go/hover-conf-talk](https://go.clipchamp.com/hover-conf-talk)
+[Slides](https://zorfling-hover-preso.netlify.app)
